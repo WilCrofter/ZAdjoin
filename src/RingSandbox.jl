@@ -1,0 +1,3 @@
+module RingSandbox
+
+end
