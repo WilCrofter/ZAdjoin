@@ -11,3 +11,6 @@
 *.jl.mem
 *.juliahistory
 
+# notes
+notes/*
+
