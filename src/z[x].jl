@@ -1,59 +1,64 @@
-import Base: +, *, string, show
+import Base: +, *, one, string, show
 
 ## Types
 
-""" PolyTable
+""" Modulus
 
-   Assuming x^n = p[1] + p[2]x + ... + p[n]x^(n-1), create expressions for x^k, k=n, ... ,2n-2
+   Assuming α^n = p[1] + p[2]α + ... + p[n]α^(n-1), create expressions for α^k, k=n, ... ,2n-2
 """
-immutable PolyTable{I<:Integer}
-  tbl::Array{Array{I,1},1}
-  function (::Type{PolyTable}){I}(p::Array{I,1})
+immutable Modulus{I<:Integer}
+  modulus::Array{Array{I,1},1}
+  function (::Type{Modulus}){I}(p::Array{I,1})
     n = length(p)
     n > 1 || error("n==1, a trivial case, is not supported")
-    tbl = Array(Array{I,1},n-1)
-    tbl[1]=p
+    modulus = Array(Array{I,1},n-1)
+    modulus[1]=p
     if n>1
       for i in 2:(n-1)
-        tbl[i] = vcat([0],tbl[i-1][1:(n-1)])+tbl[i-1][1]*p
+        modulus[i] = vcat([0],modulus[i-1][1:(n-1)])+modulus[i-1][1]*p
       end
     end
-    new{I}(tbl)
+    new{I}(modulus)
   end
 end
 
 immutable Element{I<:Integer}
   p::Array{I,1}
-  pt::PolyTable{I}
+  modulus::Modulus{I}
   
-  function (::Type{Element}){I}(p::Array{I,1}, pt::PolyTable{I})
-    length(p)==length(pt.tbl[1]) || error("unequal degrees ", length(p), " and ", length(pt.tbl[1]),".")
-    new{I}(p,pt)
+  function (::Type{Element}){I}(p::Array{I,1}, modulus::Modulus{I})
+    length(p)==length(modulus.modulus[1]) || error("unequal degrees ", length(p), " and ", length(modulus.modulus[1]),".")
+    new{I}(p,modulus)
   end
 end
 
 ## Arithmetic
 
 function +{I<:Integer}(a::Element{I},b::Element{I})
-  a.pt == b.pt || error("terms are not from the same ring")
-  Element(a.p+b.p,a.pt)
+  a.modulus == b.modulus || error("terms are not from the same ring")
+  Element(a.p+b.p,a.modulus)
 end
 
 function *{I<:Integer}(a::Element{I},b::Element{I})
-  a.pt == b.pt || error("factors are not from the same ring")
+  a.modulus == b.modulus || error("factors are not from the same ring")
   n=length(a.p)
-  ans = zeros(I,n)
-  for i in eachindex(a.p)
-    for j in i:n
-      ans[j] += a.p[i]*b.p[j]
-    end
-    if i > 1
-      for j in (n+2-i):n
-        ans += a.p[i]*b.p[j]*a.pt.tbl[i+j-n-1] 
-      end
-    end
+  ans = zeros(I,2*n-1)
+  # convolve (noting that arrays are 1-origin)
+  for k in 2:(2*n)
+     for i in max(k-n,1):min(k-1,n)
+       ans[k-1]+=a.p[i]*b.p[k-i]
+     end
   end
-  Element(ans, a.pt)
+  for i in 1:(n-1)
+    ans[1:n] += ans[n+i]*a.modulus.modulus[i]
+  end
+  Element(ans[1:n], a.modulus)
+end
+
+function one{I<:Integer}(z::Element{I})
+  p=zeros(I,length(z.p))
+  p[1]=1
+  Element(p,z.modulus)
 end
 
 ## Display
