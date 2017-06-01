@@ -1,6 +1,6 @@
-The RingSandbox  package is licensed under the MIT "Expat" License:
+The ZAdjoin  package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2017-05-13: wilcrofter
+> Copyright (c) 2017-05-16: wilcrofter
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
