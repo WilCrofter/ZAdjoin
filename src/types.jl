@@ -2,31 +2,39 @@
 
   Assuming α^n = p[1] + p[2]α + ... + p[n]α^(n-1), create expressions for α^k, k=n, ... ,2n-2 and powers 0,...,n-1of p's companion matrix.
   """
-immutable Modulus{I<:Integer}
+abstract AbstractModulus{I<:Integer}
+
+immutable Modulus{I<:Integer} <: AbstractModulus{I}
   polynomials::Array{Array{I,1},1}
   matrices::Array{Array{I,2},1}
   
   function (::Type{Modulus}){I}(p::Array{I,1})
     n = length(p)
     n > 1 || error("n==1, a trivial case, is not supported")
-    polynomials = Array(Array{I,1},n-1)
-    polynomials[1]=p
-    A = zeros(I,(n,n))
-    A[:,n]=p
-    if n>1
-      for i in 2:(n-1)
-        polynomials[i] = vcat([0],polynomials[i-1][1:(n-1)])+polynomials[i-1][1]*p
-        A[i,i-1]=1
-      end
-      A[n,n-1]=1
-    end
-    matrices = Array(Array{I,2},n)
-    for i in 1:n
-      matrices[i]=A^(i-1)
-    end
+    polynomials,matrices = modulusfields(p)
     new{I}(polynomials,matrices)
   end
   
+end
+
+function modulusfields{I}(p::Array{I,1})
+  n=length(p)
+  polynomials = Array(Array{I,1},n-1)
+  polynomials[1]=p
+  A = zeros(I,(n,n))
+  A[:,n]=p
+  if n>1
+    for i in 2:(n-1)
+      polynomials[i] = vcat([0],polynomials[i-1][1:(n-1)])+(polynomials[i-1][n])*p
+      A[i,i-1]=1
+    end
+    A[n,n-1]=1
+  end
+  matrices = Array(Array{I,2},n)
+  for i in 1:n
+    matrices[i]=A^(i-1)
+  end
+  return polynomials, matrices
 end
 
 immutable Element{I<:Integer}
@@ -34,9 +42,10 @@ immutable Element{I<:Integer}
   modulus::Modulus{I}
   
   function (::Type{Element}){I}(coef::Array{I,1}, modulus::Modulus{I})
-    length(coef)==length(modulus.polynomials[1]) || error("unequal degrees ", length(coef), " and ", length(modulus.polynomials[1]),".")
+     length(coef)==length(modulus.polynomials[1]) || error("unequal degrees ", length(coef), " and ", length(modulus.polynomials[1]),".")
     new{I}(coef,modulus)
   end
+  
 end
 
 ## Conversion
@@ -81,6 +90,7 @@ function one{I<:Integer}(z::Element{I})
   Element(p,z.modulus)
 end
 
+
 ## Equality
 
 function =={I<:Integer}(a::Element{I}, b::Element{I})
@@ -110,7 +120,7 @@ function string{I<:Integer}(z::Element{I})
   helper(z.coefficients)
 end
 
-function string{I<:Integer}(m::Modulus{I})
+function string{I<:Integer}(m::AbstractModulus{I})
   "α^$(length(m.polynomials[1])) = $(helper(m.polynomials[1]))"
 end
 
@@ -119,7 +129,7 @@ function show{I<:Integer}(io::IO, z::Element{I})
   print(io, string(z))
 end
 
-function show{I<:Integer}(io::IO, m::Modulus{I})
+function show{I<:Integer}(io::IO, m::AbstractModulus{I})
   print(io, "Modulus{$I}\n")
   print(io, string(m))
 end
