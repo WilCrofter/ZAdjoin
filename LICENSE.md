@@ -1,6 +1,6 @@
 The ZAdjoin  package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2017-05-16: wilcrofter
+> Copyright (c) 2017-05-16: William R. Bauer
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
