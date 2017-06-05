@@ -17,6 +17,20 @@ immutable Modulus{I<:Integer} <: AbstractModulus{I}
   
 end
 
+immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
+  polynomials::Array{Array{I,1},1}
+  matrices::Array{Array{I,2},1}
+  
+  function (::Type{KummerModulus}){I}(n::I)
+    k = n%2==0 ? Int(n/2) : n
+    k > 1 || error("n==$n, a trivial case, is not supported")
+    i = n%2==0 ? I(-1) : I(1)
+    polynomials,matrices = modulusfields(vcat(i,zeros(I,k-1)))
+    new{I}(polynomials,matrices)
+  end
+  
+end
+
 function modulusfields{I}(p::Array{I,1})
   n=length(p)
   polynomials = Array(Array{I,1},n-1)
@@ -39,9 +53,9 @@ end
 
 immutable Element{I<:Integer}
   coefficients::Array{I,1}
-  modulus::Modulus{I}
+  modulus::AbstractModulus{I}
   
-  function (::Type{Element}){I}(coef::Array{I,1}, modulus::Modulus{I})
+  function (::Type{Element}){I}(coef::Array{I,1}, modulus::AbstractModulus{I})
      length(coef)==length(modulus.polynomials[1]) || error("unequal degrees ", length(coef), " and ", length(modulus.polynomials[1]),".")
     new{I}(coef,modulus)
   end
@@ -66,6 +80,19 @@ end
 function +{I<:Integer}(a::Element{I},b::Element{I})
   a.modulus == b.modulus || error("terms are not from the same ring")
   Element(a.coefficients+b.coefficients,a.modulus)
+end
+
+function -{I<:Integer}(a::Element{I},b::Element{I})
+  a.modulus == b.modulus || error("terms are not from the same ring")
+  Element(a.coefficients-b.coefficients,a.modulus)
+end
+
+function +{I<:Integer}(a::Element{I})
+  Element(+(a.coefficients), a.modulus)
+end
+
+function -{I<:Integer}(a::Element{I})
+  Element(-(a.coefficients), a.modulus)
 end
 
 function *{I<:Integer}(a::Element{I},b::Element{I})
@@ -125,11 +152,11 @@ function string{I<:Integer}(m::AbstractModulus{I})
 end
 
 function show{I<:Integer}(io::IO, z::Element{I})
-  print(io, "Element{$I}\n")
+  print(io, "$(typeof(z))\n")
   print(io, string(z))
 end
 
 function show{I<:Integer}(io::IO, m::AbstractModulus{I})
-  print(io, "Modulus{$I}\n")
+  print(io, "$(typeof(m))\n")
   print(io, string(m))
 end

@@ -1,7 +1,7 @@
 module ZAdjoin
 
-import Base: +, *, one, ==, string, show, Matrix
-export Modulus, Element
+import Base: +, -, *, one, ==, string, show, Matrix
+export AbstractModulus, Modulus, KummerModulus, Element
 
 include("types.jl")
 
