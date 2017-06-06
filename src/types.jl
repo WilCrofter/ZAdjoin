@@ -4,33 +4,6 @@
   """
 abstract AbstractModulus{I<:Integer}
 
-immutable Modulus{I<:Integer} <: AbstractModulus{I}
-  polynomials::Array{Array{I,1},1}
-  matrices::Array{Array{I,2},1}
-  
-  function (::Type{Modulus}){I}(p::Array{I,1})
-    n = length(p)
-    n > 1 || error("n==1, a trivial case, is not supported")
-    polynomials,matrices = modulusfields(p)
-    new{I}(polynomials,matrices)
-  end
-  
-end
-
-immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
-  polynomials::Array{Array{I,1},1}
-  matrices::Array{Array{I,2},1}
-  
-  function (::Type{KummerModulus}){I}(n::I)
-    k = n%2==0 ? Int(n/2) : n
-    k > 1 || error("n==$n, a trivial case, is not supported")
-    i = n%2==0 ? I(-1) : I(1)
-    polynomials,matrices = modulusfields(vcat(i,zeros(I,k-1)))
-    new{I}(polynomials,matrices)
-  end
-  
-end
-
 function modulusfields{I}(p::Array{I,1})
   n=length(p)
   polynomials = Array(Array{I,1},n-1)
@@ -49,6 +22,63 @@ function modulusfields{I}(p::Array{I,1})
     matrices[i]=A^(i-1)
   end
   return polynomials, matrices
+end
+
+immutable Modulus{I<:Integer} <: AbstractModulus{I}
+  polynomials::Array{Array{I,1},1}
+  matrices::Array{Array{I,2},1}
+  
+  function (::Type{Modulus}){I}(p::Array{I,1})
+    n = length(p)
+    n > 1 || error("n==1, a trivial case, is not supported")
+    polynomials,matrices = modulusfields(p)
+    new{I}(polynomials,matrices)
+  end
+  
+end
+
+immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
+  polynomials::Array{Array{I,1},1}
+  matrices::Array{Array{I,2},1}
+  
+  function (::Type{KummerModulus}){I}(n::I)
+    k = n%2==0 ? I(n/2) : n
+    k > 1 || error("n==$n, a trivial case, is not supported")
+    i = n%2==0 ? I(-1) : I(1)
+    polynomials,matrices = modulusfields(vcat(i,zeros(I,k-1)))
+    new{I}(polynomials,matrices)
+  end
+  
+end
+
+function issquarefree{I<:Integer}(d::I)
+  # factor(d) is a dictionary whose keys are primes
+  # and whose values are corresponding prime powers.
+  # An integer is square free iff none of its prime
+  # factors have power 2 or greater.
+  all(collect(values(factor(d))) .== 1 )
+end
+
+immutable QIModulus{I<:Integer} <: AbstractModulus{I}
+  polynomials::Array{Array{I,1},1}
+  matrices::Array{Array{I,2},1}
+  d::I
+  k::I
+
+  function (::Type{QIModulus}){I}(d::I)
+    issquarefree(d) || error("$d is not square free")
+    if mod(d,4) == 1
+      # adjoin (1+sqrt(d))/2
+      k = I((d-1)/4)
+      polynomials, matrices = modulusfields([k,d])
+    else
+      # mod(d,4) is either 2 or 3, adjoin sqrt(d)
+      polynomials, matrices = modulusfields([d,I(0)])
+      k = I(0)
+    end
+    new{I}(polynomials, matrices, d, k)
+  end
+
 end
 
 immutable Element{I<:Integer}
