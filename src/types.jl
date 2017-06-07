@@ -1,4 +1,7 @@
-""" Modulus
+"""
+    AbstractModulus
+
+  
 
   Assuming α^n = p[1] + p[2]α + ... + p[n]α^(n-1), create expressions for α^k, k=n, ... ,2n-2 and powers 0,...,n-1of p's companion matrix.
   """
