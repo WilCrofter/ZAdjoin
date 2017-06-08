@@ -1,3 +1,11 @@
+## Generator
+
+function generator{I<:Integer}(modulus::AbstractModulus{I})
+  p = zeros(I,length(modulus.polynomials[1]))
+  p[2]=I(1)
+  Element(p, modulus)
+end
+
 ## Arithmetic
 
 function +{I<:Integer}(a::Element{I},b::Element{I})
@@ -38,6 +46,10 @@ function one{I<:Integer}(z::Element{I})
   p=zeros(I,length(z.coefficients))
   p[1]=1
   Element(p,z.modulus)
+end
+
+function det{I<:Integer}(z::Element{I})
+  I(round(det(Matrix(z))))
 end
 
 ## Conveniences

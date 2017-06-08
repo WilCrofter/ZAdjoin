@@ -16,13 +16,12 @@ A defining relationship, essentially n integer coefficients p[1],...,p[n] as in 
   julia> g = KummerModulus(4) 
   ZAdjoin.KummerModulus{Int64}
   α^2 = -1
+  
+  # Function generator(modulus) will return the adjoined element.
+  julia> α = generator(g)
 
-  # Elements of g are defined by 2-Vectors and g
-  julia> α = Element([0,1], g) 
-  ZAdjoin.Element{Int64}
-  +1α
-
-  julia> β = Element([3,4], g) # Another element
+  # Other elements can be formed from the adjoined element.
+  julia> β = 3+4α # Another element
   ZAdjoin.Element{Int64}
   3+4α
 
@@ -58,6 +57,16 @@ A defining relationship, essentially n integer coefficients p[1],...,p[n] as in 
   2×2 Array{Int64,2}:
     -237  3115
    -3115  -237
+   
+  # The determinant of element is the determinant of its Matrix
+  # and acts as a multiplicative homomorphism into the integers.
+  julia> det(β)
+  25
+  julia> det(1+α)
+  2
+  julia> det((1+α)*β)
+  50
+
 ```
 
 

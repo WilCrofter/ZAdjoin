@@ -21,12 +21,11 @@
   ZAdjoin.KummerModulus{Int64}
   α^2 = -1
 
-  # Elements of g are defined by 2-Vectors and g
-  julia> α = Element([0,1], g) 
-  ZAdjoin.Element{Int64}
-  +1α
+  # Function generator(modulus) will return the adjoined element.
+  julia> α = generator(g)
 
-  julia> β = Element([3,4], g) # Another element
+  # Other elements can be formed from the adjoined element.
+  julia> β = 3+4α # Another element
   ZAdjoin.Element{Int64}
   3+4α
 
@@ -63,13 +62,22 @@
     -237  3115
    -3115  -237
 
+  # The determinant of element is the determinant of its Matrix
+  # and acts as a multiplicative homomorphism into the integers.
+  julia> det(β)
+  25
+  julia> det(1+α)
+  2
+  julia> det((1+α)*β)
+  50
+
   ```
 
 
 """
 module ZAdjoin
 
-import Base: +, -, *, one, ==, string, show, Matrix
+import Base: +, -, *, one, det, ==, string, show, Matrix
 import Primes
 export AbstractModulus, Modulus, KummerModulus, Element
 
