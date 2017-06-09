@@ -83,6 +83,7 @@ export AbstractModulus, Modulus, KummerModulus, Element
 
 include("types.jl")
 include("operations.jl")
+include("utilities.jl")
 
 
 end

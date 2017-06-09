@@ -54,14 +54,6 @@ immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
   
 end
 
-function issquarefree{I<:Integer}(d::I)
-  # factor(d) is a dictionary whose keys are primes
-  # and whose values are corresponding prime powers.
-  # An integer is square free iff none of its prime
-  # factors have power 2 or greater.
-  all(collect(values(factor(d))) .== 1 )
-end
-
 immutable QIModulus{I<:Integer} <: AbstractModulus{I}
   polynomials::Array{Array{I,1},1}
   matrices::Array{Array{I,2},1}
