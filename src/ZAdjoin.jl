@@ -62,7 +62,7 @@
     -237  3115
    -3115  -237
 
-  # The determinant of element is the determinant of its Matrix
+  # The determinant of an element is the determinant of its Matrix
   # and acts as a multiplicative homomorphism into the integers.
   julia> det(β)
   25

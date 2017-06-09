@@ -45,10 +45,9 @@ immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
   matrices::Array{Array{I,2},1}
   
   function (::Type{KummerModulus}){I}(n::I)
-    k = n%2==0 ? I(n/2) : n
-    k > 1 || error("n==$n, a trivial case, is not supported")
-    i = n%2==0 ? I(-1) : I(1)
-    polynomials,matrices = modulusfields(vcat(i,zeros(I,k-1)))
+    n > 1 || error("n==$n, a trivial case, is not supported")
+    p = cyclotomic(n)
+    polynomials,matrices = modulusfields(-p[1:(end-1)])
     new{I}(polynomials,matrices)
   end
   
