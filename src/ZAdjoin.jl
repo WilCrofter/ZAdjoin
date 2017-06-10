@@ -79,7 +79,7 @@ module ZAdjoin
 
 import Base: +, -, *, one, det, ==, string, show, Matrix
 import Primes
-export AbstractModulus, Modulus, KummerModulus, Element
+export AbstractModulus, Modulus, KummerModulus, Element, generator
 
 include("types.jl")
 include("operations.jl")

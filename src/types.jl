@@ -30,12 +30,13 @@ end
 immutable Modulus{I<:Integer} <: AbstractModulus{I}
   polynomials::Array{Array{I,1},1}
   matrices::Array{Array{I,2},1}
+  symbol::String
   
-  function (::Type{Modulus}){I}(p::Array{I,1})
+  function (::Type{Modulus}){I}(p::Array{I,1}; symbol::String="α")
     n = length(p)
     n > 1 || error("n==1, a trivial case, is not supported")
     polynomials,matrices = modulusfields(p)
-    new{I}(polynomials,matrices)
+    new{I}(polynomials,matrices,symbol)
   end
   
 end
@@ -43,12 +44,13 @@ end
 immutable KummerModulus{I<:Integer} <: AbstractModulus{I}
   polynomials::Array{Array{I,1},1}
   matrices::Array{Array{I,2},1}
+  symbol::String
   
-  function (::Type{KummerModulus}){I}(n::I)
+  function (::Type{KummerModulus}){I}(n::I; symbol::String="ζ")
     n > 1 || error("n==$n, a trivial case, is not supported")
     p = cyclotomic(n)
     polynomials,matrices = modulusfields(-p[1:(end-1)])
-    new{I}(polynomials,matrices)
+    new{I}(polynomials,matrices,symbol)
   end
   
 end
@@ -102,7 +104,7 @@ end
 
 ## Display
 
-function helper{I<:Integer}(p::Array{I,1})
+function helper{I<:Integer}(p::Array{I,1}, symbol::String)
   tmp=""
   for i in eachindex(p)
     if p[i] != 0
@@ -110,9 +112,9 @@ function helper{I<:Integer}(p::Array{I,1})
       if i==1
         tmp=tmp*"$(p[1])"
       elseif i==2
-        tmp=tmp*"$(sgn)$(abs(p[i]))α"
+        tmp=tmp*"$(sgn)$(abs(p[i]))$(symbol)"
       else
-        tmp=tmp*"$(sgn)$(abs(p[i]))α^$(i-1)"
+        tmp=tmp*"$(sgn)$(abs(p[i]))$(symbol)^$(i-1)"
       end
     end
   end
@@ -120,11 +122,11 @@ function helper{I<:Integer}(p::Array{I,1})
 end
 
 function string{I<:Integer}(z::Element{I})
-  helper(z.coefficients)
+  helper(z.coefficients, z.modulus.symbol)
 end
 
 function string{I<:Integer}(m::AbstractModulus{I})
-  "α^$(length(m.polynomials[1])) = $(helper(m.polynomials[1]))"
+  "$(m.symbol)^$(length(m.polynomials[1])) = $(helper(m.polynomials[1],m.symbol))"
 end
 
 function show{I<:Integer}(io::IO, z::Element{I})
