@@ -58,10 +58,11 @@ end
 immutable QIModulus{I<:Integer} <: AbstractModulus{I}
   polynomials::Array{Array{I,1},1}
   matrices::Array{Array{I,2},1}
+  symbol::String
   d::I
   k::I
 
-  function (::Type{QIModulus}){I}(d::I)
+  function (::Type{QIModulus}){I}(d::I; symbol::String="α")
     issquarefree(d) || error("$d is not square free")
     if mod(d,4) == 1
       # adjoin (1+sqrt(d))/2
@@ -72,7 +73,7 @@ immutable QIModulus{I<:Integer} <: AbstractModulus{I}
       polynomials, matrices = modulusfields([d,I(0)])
       k = I(0)
     end
-    new{I}(polynomials, matrices, d, k)
+    new{I}(polynomials, matrices, symbol, d, k)
   end
 
 end
