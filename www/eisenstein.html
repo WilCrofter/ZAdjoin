@@ -269,7 +269,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that $\Phi(3) = 1+x+x^2.$</p>
+<p>Note that $\Phi_3(x) = 1+x+x^2.$</p>
 <p>If $\zeta$ represents the adjoined element of <code>K3</code> (the "generator" in the parlance used here), then the general form of an element of $\mathbb{Z}[\zeta]$ is $a+b\zeta.$ The matrix representation of $\zeta$ is $$\begin{bmatrix}0 & -1 \\ 1 & -1\end{bmatrix}.$$</p>
 
 </div>
@@ -277,7 +277,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span class="err">ζ</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="n">K3</span><span class="p">)</span>
@@ -292,7 +292,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -321,13 +321,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span class="k">using</span> <span class="n">Primes</span>
 
 <span class="k">function</span><span class="nf"> isEisensteinPrime</span><span class="p">{</span><span class="n">I</span><span class="p">}(</span><span class="n">p</span><span class="p">::</span><span class="n">Element</span><span class="p">{</span><span class="n">I</span><span class="p">})</span>
-    <span class="nb">typeof</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span> <span class="o">==</span> <span class="n">KummerModulus</span><span class="p">{</span><span class="n">I</span><span class="p">}</span> <span class="o">||</span> <span class="nb">error</span><span class="p">(</span><span class="s">&quot;not a Kummer integer&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">isprime</span><span class="p">(</span><span class="n">det</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="k">return</span> <span class="n">true</span> <span class="k">end</span>
     <span class="err">ζ</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">unit</span> <span class="k">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="err">ζ</span><span class="p">,</span> <span class="err">ζ</span><span class="o">^</span><span class="mi">2</span><span class="p">]</span>
@@ -351,11 +350,40 @@ div#notebook {
 <div class="output">
 
 
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>isEisensteinPrime (generic function with 1 method)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="err">ζ</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
 <div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>isKummerPrime (generic function with 1 method)</pre>
+<pre>true</pre>
 </div>
 
 </div>
@@ -369,7 +397,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="err">ζ</span><span class="p">)</span>
+<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">11</span><span class="o">*</span><span class="err">ζ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -398,7 +426,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">11</span><span class="o">*</span><span class="err">ζ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">5</span><span class="o">+</span><span class="mi">6</span><span class="err">ζ</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -427,7 +455,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">5</span><span class="o">+</span><span class="mi">6</span><span class="err">ζ</span><span class="p">)</span>
+<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">5</span><span class="o">+</span><span class="mi">11</span><span class="err">ζ</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -442,35 +470,6 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>true</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">5</span><span class="o">+</span><span class="mi">11</span><span class="err">ζ</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
 <pre>false</pre>
 </div>
 
@@ -482,7 +481,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-julia"><pre><span class="n">isEisensteinPrime</span><span class="p">(</span><span class="mi">7</span><span class="err">ζ</span><span class="p">)</span>
@@ -496,7 +495,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[16]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
